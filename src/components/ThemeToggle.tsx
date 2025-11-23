@@ -1,56 +1,65 @@
 'use client';
 
-import React from 'react';
+import { useState, useEffect } from 'react';
+import { Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from '@/lib/context/ThemeContext';
-import { Button } from '@/components/ui/button';
-import { Sun, Moon, Monitor } from 'lucide-react';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  const cycleTheme = () => {
-    if (theme === 'light') {
-      setTheme('dark');
-    } else if (theme === 'dark') {
-      setTheme('system');
-    } else {
-      setTheme('light');
-    }
-  };
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const getThemeIcon = () => {
-    switch (theme) {
-      case 'light':
-        return <Sun className="w-4 h-4" />;
-      case 'dark':
-        return <Moon className="w-4 h-4" />;
-      case 'system':
-      default:
-        return <Monitor className="w-4 h-4" />;
-    }
-  };
+  
 
-  const getThemeLabel = () => {
-    switch (theme) {
-      case 'light':
-        return 'Light';
-      case 'dark':
-        return 'Dark';
-      case 'system':
-      default:
-        return 'System';
-    }
-  };
+  // During server-side rendering or before mounting, render a placeholder
+  if (!mounted) {
+    return (
+      <div className="flex items-center space-x-2 p-2 rounded-lg bg-card border border-border">
+        <div className="w-4 h-4" />
+        <div className="w-4 h-4" />
+        <div className="w-4 h-4" />
+      </div>
+    );
+  }
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={cycleTheme}
-      className="w-full justify-start text-muted-foreground hover:text-foreground"
-    >
-      {getThemeIcon()}
-      <span className="ml-2">Theme: {getThemeLabel()}</span>
-    </Button>
+    <div className="flex items-center space-x-2 p-2 rounded-lg bg-card border border-border">
+      <button
+        onClick={() => setTheme('light')}
+        className={`p-2 rounded-md transition-colors ${
+          theme === 'light' 
+            ? 'bg-primary text-primary-foreground' 
+            : 'text-muted-foreground hover:text-foreground'
+        }`}
+        aria-label="Light theme"
+      >
+        <Sun className="w-4 h-4" />
+      </button>
+      <button
+        onClick={() => setTheme('dark')}
+        className={`p-2 rounded-md transition-colors ${
+          theme === 'dark' 
+            ? 'bg-primary text-primary-foreground' 
+            : 'text-muted-foreground hover:text-foreground'
+        }`}
+        aria-label="Dark theme"
+      >
+        <Moon className="w-4 h-4" />
+      </button>
+      <button
+        onClick={() => setTheme('system')}
+        className={`p-2 rounded-md transition-colors ${
+          theme === 'system' 
+            ? 'bg-primary text-primary-foreground' 
+            : 'text-muted-foreground hover:text-foreground'
+        }`}
+        aria-label="System theme"
+      >
+        <Monitor className="w-4 h-4" />
+      </button>
+    </div>
   );
 }

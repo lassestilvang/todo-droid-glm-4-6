@@ -108,9 +108,9 @@ export function TaskItem({ task, index }: TaskItemProps) {
         <div className="p-4">
           <div className="flex items-start gap-3">
             {/* Checkbox */}
-            <button
+            <div
               onClick={handleToggleComplete}
-              className={`mt-0.5 flex-shrink-0 transition-colors ${
+              className={`mt-0.5 flex-shrink-0 transition-colors cursor-pointer ${
                 task.isCompleted 
                   ? 'text-primary' 
                   : 'text-muted-foreground hover:textPrimary'
@@ -120,7 +120,7 @@ export function TaskItem({ task, index }: TaskItemProps) {
                 checked={task.isCompleted}
                 className="w-4 h-4"
               />
-            </button>
+            </div>
 
             {/* Task Content */}
             <div className="flex-1 min-w-0">

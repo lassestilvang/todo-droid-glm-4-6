@@ -9,12 +9,13 @@ export default [
   js.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
+    ignores: ['dist/**', '.next/**', 'node_modules/**', 'tests/**'],
+  },
+  {
+    files: ['src/**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-      },
+      globals: globals.browser,
       parser: tsparser,
       parserOptions: {
         ecmaVersion: 'latest',
@@ -38,6 +39,16 @@ export default [
       'no-unused-vars': ['off'],
       '@typescript-eslint/no-explicit-any': 'warn',
     },
-    ignores: ['dist', '.next/**', 'node_modules', 'tests', '*.config.js', 'postcss.config.js'],
+  },
+  {
+    files: ['*.config.js', 'postcss.config.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+      sourceType: 'commonjs',
+    },
+    rules: {
+      'no-undef': 'off',
+    },
   },
 ]

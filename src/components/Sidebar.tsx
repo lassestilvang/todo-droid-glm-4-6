@@ -5,12 +5,15 @@ import { useTask } from '@/lib/context/TaskContext';
 import { Button } from '@/components/ui/button';
 import { AddTaskModal } from '@/components/AddTaskModal';
 import { AddListModal } from '@/components/AddListModal';
+import { ListManager } from '@/components/ListManager';
+import { LabelManager } from '@/components/LabelManager';
 import { ViewType } from '@/types';
 import { motion } from 'framer-motion';
 import { 
   Inbox, Calendar, CalendarDays, Clock, ListTodo, 
-  Plus, Search, ChevronDown, ChevronRight
+  Plus, Search, ChevronDown, ChevronRight, Tag, Folder
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Sidebar() {
   const {
@@ -25,6 +28,8 @@ export function Sidebar() {
 
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [isAddingList, setIsAddingList] = useState(false);
+  const [isManagingLabels, setIsManagingLabels] = useState(false);
+  const [isManagingLists, setIsManagingLists] = useState(false);
 
   const views = [
     { id: 'today', name: 'Today', icon: Calendar },
@@ -40,10 +45,13 @@ export function Sidebar() {
     <div className="w-64 lg:w-72 bg-card border-r border-border flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-border">
-        <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
-          <Inbox className="w-5 h-5" />
-          Daily Planner
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <Inbox className="w-5 h-5" />
+            Daily Planner
+          </h1>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Search */}
@@ -136,7 +144,7 @@ export function Sidebar() {
                   </motion.button>
                 );
               })}
-              <div className="px-4">
+              <div className="px-4 space-y-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -146,6 +154,17 @@ export function Sidebar() {
                   <Plus className="w-4 h-4 mr-2" />
                   New List
                 </Button>
+                {lists.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsManagingLists(true)}
+                  >
+                    <Folder className="w-4 h-4 mr-2" />
+                    Manage Lists
+                  </Button>
+                )}
               </div>
             </nav>
           )}
@@ -179,8 +198,36 @@ export function Sidebar() {
                     />
                   </motion.div>
                 ))}
+                <div className="px-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-muted-foreground hover:text-foreground"
+                    onClick={() => setIsManagingLabels(true)}
+                  >
+                    <Tag className="w-4 h-4 mr-2" />
+                    Manage Labels
+                  </Button>
+                </div>
               </nav>
             )}
+          </div>
+        )}
+
+        {/* Labels section for when no labels exist */}
+        {labels.length === 0 && (
+          <div className="mb-6">
+            <div className="px-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-muted-foreground hover:text-foreground"
+                onClick={() => setIsManagingLabels(true)}
+              >
+                <Tag className="w-4 h-4 mr-2" />
+                Create Labels
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -207,6 +254,18 @@ export function Sidebar() {
         <AddListModal
           isOpen={isAddingList}
           onClose={() => setIsAddingList(false)}
+        />
+
+        {/* List Manager Modal */}
+        <ListManager
+          isOpen={isManagingLists}
+          onClose={() => setIsManagingLists(false)}
+        />
+
+        {/* Label Manager Modal */}
+        <LabelManager
+          isOpen={isManagingLabels}
+          onClose={() => setIsManagingLabels(false)}
         />
       </div>
     </div>

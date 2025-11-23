@@ -6,7 +6,7 @@ import { Task, Priority, Subtask } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { X, Calendar, Clock, Tag, Flag, Plus, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -145,6 +145,9 @@ export function EditTaskModal({ isOpen, onClose, task }: EditTaskModalProps) {
             </div>
           </div>
         </DialogHeader>
+        <DialogDescription>
+          Make changes to your task here. Click save when you're done.
+        </DialogDescription>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Task Name */}

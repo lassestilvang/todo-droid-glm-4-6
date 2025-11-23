@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Clock, List, Flag } from 'lucide-react';
+import { X, Calendar, Clock, List, Flag, Tag } from 'lucide-react';
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -15,7 +15,7 @@ interface AddTaskModalProps {
 }
 
 export function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
-  const { addTask, lists } = useTask();
+  const { addTask, lists, labels } = useTask();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -27,6 +27,8 @@ export function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
     listId: 'inbox' as string,
   });
 
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+
   const resetForm = () => {
     setFormData({
       name: '',
@@ -37,6 +39,7 @@ export function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
       priority: 'none',
       listId: 'inbox',
     });
+    setSelectedLabels([]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,7 +58,7 @@ export function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
       listId: formData.listId,
       isCompleted: false,
       subtasks: [],
-      labels: [],
+      labels: labels.filter(l => selectedLabels.includes(l.id)),
       isRecurring: false,
       attachments: undefined,
     };
@@ -63,6 +66,14 @@ export function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
     addTask(newTask);
     resetForm();
     onClose();
+  };
+
+  const toggleLabel = (labelId: string) => {
+    setSelectedLabels(prev => 
+      prev.includes(labelId) 
+        ? prev.filter(id => id !== labelId)
+        : [...prev, labelId]
+    );
   };
 
   const priorityOptions = [
@@ -224,6 +235,35 @@ export function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Labels */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                <Tag className="w-4 h-4 inline mr-1" />
+                Labels
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {labels.map((label) => (
+                  <button
+                    key={label.id}
+                    type="button"
+                    onClick={() => toggleLabel(label.id)}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs border-2 transition-colors ${
+                      selectedLabels.includes(label.id)
+                        ? 'border-primary'
+                        : 'border-border hover:border-muted-foreground'
+                    }`}
+                    style={{ 
+                      backgroundColor: selectedLabels.includes(label.id) ? label.color + '20' : 'transparent',
+                      color: selectedLabels.includes(label.id) ? label.color : 'text-muted-foreground'
+                    }}
+                  >
+                    <span>{label.icon}</span>
+                    <span>{label.name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Actions */}
